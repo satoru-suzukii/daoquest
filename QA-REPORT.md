@@ -1,58 +1,74 @@
-# Dao Quest — V1.0 QA Report
+# Dao Quest 1.0 — Stress and Regression QA Report
 
-## Release scope
+**Release:** Dao Quest 1.0  
+**Audit date:** 9 November 2026  
+**Scope:** Stability, correctness, save compatibility, lifespan behavior, performance edge cases, and interface regression only. No new gameplay features or progression content were added.
 
-This release keeps the application at **Dao Quest 1.0** and applies the requested lifespan table only. The cultivation hierarchy, realm requirements, skill costs, reward formulas, progression rules, and all non-lifespan balance values are preserved.
+## Summary
 
-## Automated checks
+The release candidate passed the static checks, the focused browser regression suite, the randomized save/skill tests, and the end-to-end state-transition checks described below. The audit did uncover and repair three save/lifespan edge cases:
 
-- `node --check` passed for all game JavaScript files and `playtest.js`.
+1. **Imported saves could show the wrong lifespan.** An imported save could carry a finite cap into an immortal realm, or `∞` into a finite realm. Lifespan is now rebuilt from the authoritative realm table on import, just as it is on normal slot loading.
+2. **Very old `ageYears` saves could lose the character's age.** Migration previously merged in the default `age: 0` before reading `ageYears`, masking the legacy value. The legacy field is now migrated before defaults are merged, and then removed.
+3. **An imported save captured during death/reincarnation could remain frozen.** The normal slot loader already resumed interrupted death flows, but the import path did not. Imported pending-death flags now enter the same guarded death/reincarnation recovery path.
+
+These fixes do not alter lifespan values, cultivation costs, rewards, Qi rates, realm requirements, skills, or progression balance.
+
+## Static and packaging checks
+
+- `node --check` passed for all five game JavaScript files and `playtest.js`.
 - `balance.json` parsed successfully.
-- `node playtest.js` completed with the same four progression outcomes as the previous stable baseline.
-- A structured comparison confirmed that every non-lifespan balance value is unchanged; `yearsPerSecond` remains `0.5`.
-- All game files load using the renamed audio-bootstrap script; no deleted video script is referenced.
+- `balance.json` SHA-256: `a0a1a0c86b9f5bc49820470f68abe435d57ba36c2147ef2b2c8a8a7616301ea1`.
+- The version constant and visible build label remain **1.0**.
+- No duplicate HTML IDs were found.
+- All local HTML script, stylesheet, and image references resolve to files in the project.
+- All local CSS `url(...)` references resolve to files in the project.
+- No video element, cutscene trigger, video-player, or skip-video references remain in shipped HTML/CSS/JavaScript/simulator source.
+- No old visible project branding was found in the shipped app or README.
+- `unzip -t` and clean extraction passed for the release archive.
 
-## Video/cutscene removal checks
+## Automated test results
 
-- Removed the `<video>` element, playback overlay, and skip control from `index.html`.
-- Removed video overlay and skip-control CSS, including later override rules.
-- Removed the full playback queue, file map, event handlers, and video error/retry code.
-- Removed all cutscene trigger calls from new-game, final completion, death, and reincarnation paths.
-- Preserved the original cultivation state transitions, save behavior, reincarnation/death handling, and result dialogs.
-- Renamed the retained music/bootstrap file to `js/05-audio-bootstrap.js`; background music controls and playback logic remain.
+### Browser regression suite — 29/29 passed
 
-## Rename and save compatibility checks
+The suite exercised the actual project HTML, CSS, JavaScript, and `balance.json` in headless Chromium. The 29 checks covered:
 
-- Updated document title, metadata, header, main menu, footer, code comments, simulator output, README, and QA report to Dao Quest.
-- Set the `VERSION` constant and visible build labels to `1.0`.
-- Changed the active save, achievements, active-slot, music-settings, and export format namespaces to Dao Quest identifiers.
-- Kept compatibility readers for previous save/settings keys and the previous export format, so existing local saves and backups remain importable. These are retained only as non-visible migration aliases.
-- The new ZIP root folder is `Dao-Quest/`.
+- Dao Quest title, version, title-menu state, and pre-start achievement suppression.
+- Hiding session controls before the journey begins and restoring them after starting.
+- Pointer click debouncing.
+- All 160 breakthrough requirement values being finite, positive, and strictly increasing.
+- All 16 lifespan entries matching the requested schedule.
+- Repairing missing or malformed lifespan configuration while forcing Third Step onward to infinite lifespan.
+- Lifespan limits remaining independent of Karma.
+- Qi production remaining independent of time speed while aging scales with speed.
+- 15,000 high-speed ticks in an immortal realm without aging or death.
+- Finite-life clamping at the exact cap, with the death handler invoked once.
+- 1,200 malformed/partial save migration fuzz cases.
+- Legacy `ageYears` migration.
+- Save/load and save-slot isolation.
+- Import normalization between finite and infinite lifespan realms.
+- Invalid-import rollback without overwriting the existing save.
+- Legacy local-save loading.
+- Offline Qi arithmetic, same-tab at-most-once claiming, paused-session handling, and storage-write failure handling.
+- Final Dao completion latching without repeat spending.
+- Settings and achievement panel interactions.
+- Responsive layouts at widths 320, 360, 375, 414, 768, 1024, 1280, and 1920 CSS pixels, with no horizontal overflow.
+- Modal queue order, single resolution, and cleanup.
+- No uncaught page exceptions or unexpected browser console errors. The invalid-import and deliberately simulated storage-quota paths emit their expected error logs during those negative tests.
 
-## Browser and migration smoke tests
+### Additional stress and focused flow tests
 
-The app was exercised in headless Chromium using an embedded document containing the actual HTML, CSS, JavaScript, and project `balance.json`. Direct local HTTP navigation was blocked by the browser sandbox, so the test harness supplied an in-memory `localStorage` implementation and the real balance data.
+- **1,500 randomized bulk skill purchases/previews:** passed; no negative/non-finite Qi, rank over-cap, NaN preview values, or uncaught exceptions.
+- **2,000 click burst:** passed; all 2,000 clicks were recorded, Qi remained finite, and all temporary floating-number DOM nodes were removed after their animation timeout.
+- **160 breakthrough transitions:** passed from the starting realm through Ancestor Realm and the final completion trigger. The final state was Ancestor Realm Stage 10, Third-Step-and-beyond lifespan `∞`, age zero, and the one-time completion choice pending.
+- **Natural lifespan death and forced reincarnation:** passed. The death count incremented once, the forced-reincarnation count incremented once, and the dead/reincarnating guards cleared after rebirth.
+- **Import during an interrupted death flow:** passed after the fix. The death handler resumed, the death modal appeared after queued import/achievement notices, and confirming it completed exactly one forced reincarnation. A separate import-at-exact-lifespan-cap case also entered the death flow immediately.
+- **Offline aging to lifespan cap:** passed. An offline session aged a finite cultivator to the exact cap, persisted the consumed snapshot, and invoked the death handler once without replaying offline Qi on a second claim.
+- **Export/import round trip:** passed. New exports use `dao-quest-save`, retain game state and achievements, and restore the tested Qi/click values.
+- **Reset confirmation:** cancelling preserved the save; confirming cleared the game save and counters. Because reset keeps the current session active, the starting Qi Condensation achievement is immediately earned again for the fresh in-place journey; no other prior achievement/click/purchase state was retained.
+- **Full included `playtest.js` run:** completed and produced the same four preset profile results as the lifespan-adjusted baseline. These preset profiles stop in the Nirvana realms; they do not simulate a completed 16-realm playthrough. The separate 160-transition browser test covers the full realm ladder logic.
 
-- Fresh boot displayed the Dao Quest document title and build `1.0`.
-- The main menu was visible, Settings/Achievements controls were hidden, and zero video/player/skip DOM nodes existed before starting.
-- Starting a new journey activated the gameplay UI and made Settings visible.
-- The game state recorded version `1.0`; new backups exported with the `dao-quest-save` format.
-- The previous full backup format was accepted by the import path.
-- Previous save, achievement, active-slot, and music-setting keys migrated into the new namespace. The old keys were removed after successful copies.
-- A migrated save loaded with its Qi (`12345`) and lifetime death count (`2`) intact, and its in-memory version was normalized to `1.0`.
-- Fresh-start, export/import, and legacy-migration browser smoke checks reported no uncaught page errors or console errors.
-
-## Static cleanup checks
-
-- Searched the shipped HTML, CSS, JavaScript, and simulator for video elements, video asset paths, cutscene identifiers, playback functions, and references to the removed bootstrap filename: none remain.
-- Checked all local script, stylesheet, and image references in the HTML: all referenced files exist.
-- Confirmed every script passes `node --check` and the archive's included simulator runs to completion.
-- Confirmed only the requested lifespan configuration and its related code/documentation changed; all other balance values remain unchanged.
-
-
-## Lifespan adjustment — Dao Quest 1.0 (final balance adjustment)
-
-The `realmMaxLifespan` table in both `balance.json` and the in-code fallback now matches the 16-realm hierarchy exactly:
+## Lifespan table verified
 
 | Step | Realm | Maximum lifespan |
 |---|---|---:|
@@ -68,24 +84,14 @@ The `realmMaxLifespan` table in both `balance.json` and the in-code fallback now
 | Second | Nirvana Shatterer | 100,000,000 years |
 | Third and beyond | All remaining realms | Infinite |
 
-- Removed Karma scaling from lifespan caps so the listed limits are exact at every Karma value. Karma continues to affect its other existing systems.
-- Existing finite saves recompute remaining lifespan from their saved age and the new realm cap.
-- Saves already in the Third Step or beyond are normalized to infinite lifespan.
-- Realm advancement into the Third Step grants infinite lifespan and resets the lifespan death latch.
-- The aging rate, time-speed options, Qi production, realm progression, skills, costs, and rewards are unchanged.
+The Karma lifespan multiplier remains removed. `yearsPerSecond` remains `0.5`; Qi speed behavior and all non-lifespan balance data remain unchanged.
 
-### Lifespan-specific tests
+## Test environment and limitations
 
-- Confirmed all 16 array entries match the requested realm order and values.
-- Confirmed finite realm caps remain exact at Karma 0, 1, 100, and 1,000,000.
-- Confirmed every Third-, Fourth-, and Fifth-Step realm returns infinite lifespan.
-- Confirmed an existing finite save updates its remaining lifespan using `new cap − saved age`.
-- Confirmed an existing save in the Third Step becomes immortal on load normalization.
-- Confirmed a finite cultivator dies exactly at the configured cap, not before.
-- Confirmed a Third-Step cultivator does not age or trigger lifespan death.
-- Confirmed the in-code fallback and external `balance.json` contain the same lifespan table.
-- Confirmed all JavaScript files pass `node --check` and the included progression simulator still completes with the same four results.
+The browser sandbox blocked direct local HTTP navigation. To test the app, the harness embedded the actual HTML/CSS and loaded the actual JavaScript in Chromium, provided the project's real `balance.json`, and substituted an in-memory `localStorage` implementation plus the balance fetch response. This validates the application logic and DOM behavior, but it is not a test against the deployed website's real origin or browser storage implementation.
 
-## Scope and limitations
+The suite used headless Chromium only. It does not establish compatibility with every version of Firefox, Safari, WebView, or every physical mobile device. The optional MP3 soundtrack files are not included in this source archive, so actual track playback could not be verified; the music controls and missing-track fallback remain in place. No QA process can prove the absence of every possible bug or replace extended real-player testing.
 
-The project was validated with static checks and its included Node progression simulator. This report does not claim exhaustive manual testing on every browser/device combination. Browser audio autoplay and local storage availability remain subject to platform policies. Optional soundtrack files are not included in this source archive; the game remains playable without them.
+## Release conclusion
+
+**Dao Quest 1.0 is the recommended stable baseline after this audit.** The identified reproducible defects were repaired, automated regression and stress checks passed, and no gameplay expansion or balance changes were introduced. Future changes should remain limited to reproducible bug fixes unless the project scope is intentionally reopened.
