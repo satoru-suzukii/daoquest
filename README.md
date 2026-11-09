@@ -7,7 +7,7 @@
 *Gather Qi. Refine your path. Break through the realms. Pursue the Dao.*
 
 ![Version](https://img.shields.io/badge/version-1.0-8b5cf6?style=for-the-badge)
-![Technology](https://img.shields.io/badge/HTML-CSS-JavaScript-f59e0b?style=for-the-badge&logo=javascript&logoColor=white)
+![HTML5](https://img.shields.io/badge/html5-%23E34F26.svg?style=for-the-badge&logo=html5&logoColor=white) ![CSS3](https://img.shields.io/badge/css3-%231572B6.svg?style=for-the-badge&logo=css3&logoColor=white) ![JavaScript](https://img.shields.io/badge/javascript-%23323330.svg?style=for-the-badge&logo=javascript&logoColor=%23F7DF1E)
 ![Platform](https://img.shields.io/badge/platform-Web%20Browser-0ea5e9?style=for-the-badge)
 ![License](https://img.shields.io/badge/license-MIT-22c55e?style=for-the-badge)
 
