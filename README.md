@@ -1,144 +1,324 @@
-# Dao Quest
+<div align="center">
 
-**Version 1.0** · Browser-based cultivation incremental game · MIT License
+# ☯️ DAO QUEST
 
-Dao Quest is a browser-based incremental cultivation game built with **HTML, CSS, and vanilla JavaScript**. Begin at Qi Condensation, gather Qi, strengthen your techniques, and advance through **16 realms across five cultivation steps**. Each realm has ten stages, with lifespan management, reincarnation, achievements, offline progress, and browser-local saves.
+### 🏯 A Browser-Based Cultivation Incremental Game
 
-The project is intentionally build-step-free: no framework, package installation, or backend is required. It can run locally through a static HTTP server or be published with GitHub Pages.
+*Gather Qi. Refine your path. Break through the realms. Pursue the Dao.*
 
-## Highlights
+![Version](https://img.shields.io/badge/version-1.0-8b5cf6?style=for-the-badge)
+![Technology](https://img.shields.io/badge/HTML-CSS-JavaScript-f59e0b?style=for-the-badge&logo=javascript&logoColor=white)
+![Platform](https://img.shields.io/badge/platform-Web%20Browser-0ea5e9?style=for-the-badge)
+![License](https://img.shields.io/badge/license-MIT-22c55e?style=for-the-badge)
 
-- **Active and passive cultivation:** click or tap to gather Qi, while passive production continues over time.
-- **Sixteen realms:** progress through five cultivation steps, with ten stages in every realm.
-- **Techniques and skills:** invest Qi in upgrades, with realm-specific ranks where applicable.
-- **Lifespan and time flow:** finite lifespans through the Second Step; infinite lifespan from the Third Step onward. Time flow changes aging, not Qi production.
-- **Reincarnation:** begin a new life at Qi Condensation while retaining accumulated legacy benefits.
-- **Offline progress:** receive eligible cultivation gains when returning, subject to a 16-hour cap.
-- **Achievements:** track cultivation, techniques, reincarnation, time, and other milestones.
-- **Three save slots:** browser-local persistence plus manual export/import backups.
-- **Responsive interface:** adapts to desktop and mobile screen sizes.
+**A self-contained, browser-based idle cultivation game built with HTML, CSS, and vanilla JavaScript.**
 
-## Cultivation progression
+</div>
 
-Every realm contains ten stages.
+---
 
-| Step | Realm | Lifespan |
-|---|---|---:|
-| **First** | Qi Condensation | 100 years |
-| **First** | Foundation Establishment | 200 years |
-| **First** | Golden Core | 3,000 years |
-| **First** | Nascent Soul | 10,000 years |
-| **First** | Soul Formation | 30,000 years |
-| **First** | Soul Transformation | 100,000 years |
-| **First** | Ascendant | 500,000 years |
-| **Second** | Nirvana Scryer | 1,000,000 years |
-| **Second** | Nirvana Cleanser | 10,000,000 years |
-| **Second** | Nirvana Shatterer | 100,000,000 years |
-| **Third** | Nirvana Void | Infinite |
-| **Third** | Spirit Void | Infinite |
-| **Third** | Arcane Void | Infinite |
-| **Third** | Void Tribulant | Infinite |
-| **Fourth** | Dao Source Realm | Infinite |
-| **Fifth** | Ancestor Realm | Infinite |
+## 📜 Table of Contents
 
-Breaking through Ascendant Stage 10 carries the cultivator into the Second Step; this transition does not force reincarnation. After the first crossing into the Second Step, voluntary reincarnation is unlocked; it can be chosen while the cultivator is at Ascendant or a higher realm. The Ancestor Realm is the highest realm currently implemented in Version 1.0.
+- [🌌 About the Game](#-about-the-game)
+- [✨ Features](#-features)
+- [🏔️ Cultivation Progression](#️-cultivation-progression)
+- [⌛ Lifespan System](#-lifespan-system)
+- [🎮 How to Play](#-how-to-play)
+- [💾 Saves and Backups](#-saves-and-backups)
+- [🚀 Run Locally](#-run-locally)
+- [🗂️ Project Structure](#️-project-structure)
+- [🛠️ Development and Testing](#️-development-and-testing)
+- [🎵 Audio and Optional Assets](#-audio-and-optional-assets)
+- [📦 Version, Scope and License](#-version-scope-and-license)
 
-Lifespan limits are exact and are not multiplied by Karma. Reaching the limit in a finite-lifespan realm triggers death and forced reincarnation. Time-flow settings affect lifespan aging only; they do not alter Qi production.
+---
 
-## How to play
+## 🌌 About the Game
 
-1. Choose **Begin a New Journey** or load an existing save.
-2. Click or tap the cultivator artwork to gather Qi.
-3. Let passive Qi production accumulate over time.
-4. Purchase available techniques and skills to improve cultivation.
-5. Select **Break Through** when you have enough Qi for the next stage.
-6. Monitor your age and lifespan in finite-lifespan realms.
-7. Adjust time flow when needed. This changes aging, not Qi production.
-8. Continue through the cultivation steps and choose when to reincarnate after crossing the First-Step boundary.
+**Dao Quest** is an incremental cultivation game inspired by the progression and realm structure commonly found in cultivation and xianxia fiction.
 
-## Run locally
+Begin your journey at **Qi Condensation**, gather spiritual energy, strengthen your techniques, and advance through **16 cultivation realms across five steps**. Each realm contains ten stages. Progress comes from a combination of active Qi gathering and passive cultivation, with breakthroughs, achievements, lifespan management, reincarnation, and offline progress supporting the journey.
 
-No build tools or dependency installation are required. The game loads `balance.json` with `fetch()`, so serve the project over HTTP instead of opening `index.html` directly with a `file://` URL.
+> 🧘 **The goal:** advance through the cultivation hierarchy and reach the **Ancestor Realm**, the highest realm currently implemented in Version 1.0.
 
-With Python installed, open a terminal in the project directory and run:
+### ⚙️ Built to run simply
+
+| | Project detail |
+|:--|:--|
+| 🧱 **Technologies** | HTML5 · CSS3 · Vanilla JavaScript |
+| 🌐 **Platform** | Modern desktop and mobile browsers |
+| 📦 **Dependencies** | No framework or package installation required |
+| 🏗️ **Build process** | No compilation or bundling step |
+| 💽 **Persistence** | Browser-local storage with export/import backups |
+| 📄 **License** | MIT — see [`LICENSE`](LICENSE) |
+
+---
+
+## ✨ Features
+
+<table>
+  <tr>
+    <td width="50%">
+      <h3>☯️ Active Cultivation</h3>
+      Click or tap the cultivator artwork to gather Qi directly.
+    </td>
+    <td width="50%">
+      <h3>🌀 Passive Cultivation</h3>
+      Generate Qi over time as your cultivation develops.
+    </td>
+  </tr>
+  <tr>
+    <td>
+      <h3>🏔️ Realm Progression</h3>
+      Advance through 16 realms, five cultivation steps, and ten stages per realm.
+    </td>
+    <td>
+      <h3>📚 Techniques and Skills</h3>
+      Spend Qi on upgrades and realm-related cultivation improvements.
+    </td>
+  </tr>
+  <tr>
+    <td>
+      <h3>⌛ Lifespan and Time Flow</h3>
+      Manage finite lifespans in the first two steps. Lifespan becomes infinite from the Third Step onward.
+    </td>
+    <td>
+      <h3>♻️ Reincarnation</h3>
+      Begin another life while retaining accumulated legacy benefits.
+    </td>
+  </tr>
+  <tr>
+    <td>
+      <h3>🌙 Offline Progress</h3>
+      Receive eligible progress when returning to a saved journey, subject to the configured time cap.
+    </td>
+    <td>
+      <h3>🏆 Achievements</h3>
+      Track cultivation milestones, techniques, reincarnation, playtime, and more.
+    </td>
+  </tr>
+  <tr>
+    <td>
+      <h3>💾 Save Management</h3>
+      Use three browser-local save slots, automatic persistence, and manual export/import.
+    </td>
+    <td>
+      <h3>📱 Responsive Interface</h3>
+      Play on desktop or mobile-sized screens.
+    </td>
+  </tr>
+</table>
+
+---
+
+## 🏔️ Cultivation Progression
+
+Every realm contains **10 stages**. The current hierarchy contains 16 realms:
+
+<details open>
+<summary><strong>🟢 First Step — Seven Realms</strong></summary>
+
+| # | Realm | Lifespan |
+|:--:|---|---:|
+| 01 | Qi Condensation | 100 years |
+| 02 | Foundation Establishment | 200 years |
+| 03 | Golden Core | 3,000 years |
+| 04 | Nascent Soul | 10,000 years |
+| 05 | Soul Formation | 30,000 years |
+| 06 | Soul Transformation | 100,000 years |
+| 07 | Ascendant | 500,000 years |
+
+</details>
+
+<details open>
+<summary><strong>🔵 Second Step — Three Realms</strong></summary>
+
+| # | Realm | Lifespan |
+|:--:|---|---:|
+| 08 | Nirvana Scryer | 1,000,000 years |
+| 09 | Nirvana Cleanser | 10,000,000 years |
+| 10 | Nirvana Shatterer | 100,000,000 years |
+
+</details>
+
+<details open>
+<summary><strong>🟣 Third Step — Four Realms</strong></summary>
+
+| # | Realm | Lifespan |
+|:--:|---|---:|
+| 11 | Nirvana Void | ♾️ Infinite |
+| 12 | Spirit Void | ♾️ Infinite |
+| 13 | Arcane Void | ♾️ Infinite |
+| 14 | Void Tribulant | ♾️ Infinite |
+
+</details>
+
+<details open>
+<summary><strong>🟠 Fourth Step — One Realm</strong></summary>
+
+| # | Realm | Lifespan |
+|:--:|---|---:|
+| 15 | Dao Source Realm | ♾️ Infinite |
+
+</details>
+
+<details open>
+<summary><strong>🔴 Fifth Step — The Current Apex</strong></summary>
+
+| # | Realm | Lifespan |
+|:--:|---|---:|
+| 16 | **Ancestor Realm** | ♾️ Infinite |
+
+</details>
+
+> 📌 **Progression notes**
+> - Breaking through **Ascendant Stage 10** advances the character into the Second Step; this transition does not force reincarnation.
+> - Voluntary reincarnation becomes available after crossing the First-Step boundary and can be chosen while at Ascendant or a higher realm.
+> - **Ancestor Realm** is the highest currently implemented realm in Version 1.0.
+
+---
+
+## ⌛ Lifespan System
+
+Lifespan limits are fixed values. **Karma does not multiply or extend them.**
+
+| Cultivation stage | Lifespan rule |
+|---|---:|
+| First Step | Realm-specific finite lifespan |
+| Second Step | Realm-specific finite lifespan |
+| Third Step onward | ♾️ Infinite lifespan |
+
+- ⚠️ Reaching the lifespan limit in a finite-lifespan realm triggers death and forced reincarnation.
+- ⏱️ Time-flow settings change lifespan aging only.
+- ☯️ Time flow does **not** increase or decrease Qi generated per click or per second.
+
+---
+
+## 🎮 How to Play
+
+1. 🚪 **Begin** — start a new journey or load an existing save slot.
+2. 👆 **Gather Qi** — click or tap the cultivator artwork.
+3. 🌱 **Cultivate** — allow passive Qi production to accumulate.
+4. 📚 **Improve** — purchase available techniques and skills.
+5. ⚡ **Break Through** — advance when you have enough Qi for the next stage.
+6. ⌛ **Watch your lifespan** — monitor age and lifespan while in finite-lifespan realms.
+7. 🕰️ **Manage time flow** — adjust aging speed when needed; Qi production is unaffected.
+8. ♻️ **Continue your journey** — progress through the steps and choose when to reincarnate after crossing the First-Step boundary.
+
+### 📊 What the interface tracks
+
+Current Qi · Qi per click · Qi per second · Realm and stage · Breakthrough requirements · Age and lifespan · Time-flow settings · Techniques · Achievements · Save settings.
+
+---
+
+## 💾 Saves and Backups
+
+Dao Quest stores progress in the browser's **`localStorage`**. There is no cloud account or remote save service. Your three save slots belong to the browser profile and device where they were created.
+
+<div align="center">
+
+| 💡 Good practice | Why it matters |
+|---|---|
+| 📤 Export important journeys | Keep a portable backup outside the browser. |
+| 🔄 Export before switching devices or browsers | Browser-local saves do not automatically transfer. |
+| 🧹 Back up before clearing site data | Clearing browser storage can permanently erase local saves. |
+| 📥 Use Import to restore a backup | Restore a previously exported journey. |
+
+</div>
+
+✅ Supported older saves are migrated when loaded or imported. Older legacy storage keys are also recognized for compatibility.
+
+> **⚠️ Important:** Export a backup before clearing browser data. This is the safest way to preserve your progress.
+
+---
+
+## 🚀 Run Locally
+
+Dao Quest requires **no build tools, package manager, or dependency installation**. The game loads `balance.json` using `fetch()`, so run it through a local HTTP server instead of opening `index.html` directly with a `file://` URL.
+
+### 1. Start a local server
+
+Open a terminal in the project directory and run:
 
 ```bash
 python -m http.server 8000
 ```
 
-On some systems, use `python3` instead. Then open **http://localhost:8000** in your browser. Stop the server with `Ctrl+C` when finished.
+If your system uses `python3`, run:
 
-## Publish with GitHub Pages
+```bash
+python3 -m http.server 8000
+```
 
-1. Upload the **contents** of the `Dao-Quest` project folder to the repository root. The root should directly contain `index.html`, `balance.json`, `css/`, `js/`, and `assets/`.
-2. Commit and push the files to your chosen branch, commonly `main`.
-3. In the repository, open **Settings → Pages**.
-4. Under the build and deployment options, select deployment from a branch.
-5. Select the branch and the `/(root)` folder, then save.
-6. Open the Pages URL provided by GitHub after deployment completes.
+### 2. Open the game
 
-Keep the file and folder paths unchanged because the page loads its local scripts, stylesheet, balance data, and images by relative path.
+Visit this address in your browser:
 
-## Saves and backups
+```text
+http://localhost:8000
+```
 
-Game data is stored in the browser's `localStorage`. There is no cloud account or remote save service. The three save slots are local to the browser profile and device where they were created.
+To stop the server, return to the terminal and press **Ctrl + C**.
 
-- Use **Export** in Settings to create a backup of an important journey.
-- Keep exported backups outside the browser.
-- Export before clearing site data, switching browsers, or moving to another device.
-- Use **Import** to restore an exported save.
-- Supported older saves are migrated when loaded or imported.
+---
 
-Clearing browser storage can permanently remove local saves. Exporting a backup is the safest way to preserve progress.
-
-## Project structure
+## 🗂️ Project Structure
 
 ```text
 Dao-Quest/
-├── index.html
-├── balance.json
-├── README.md
-├── README.txt
-├── QA-REPORT.md
-├── LICENSE
-├── playtest.js
+├── index.html                         # Main application page
+├── balance.json                       # Realm, skill, reward and lifespan data
+├── README.md                          # GitHub project documentation
+├── README.txt                         # Plain-text documentation
+├── QA-REPORT.md                       # Release audit and test report
+├── LICENSE                            # MIT License
+├── playtest.js                        # Node.js progression simulator
+│
+├── assets/
+│   ├── cultivator.jpg                 # Cultivator artwork
+│   └── cultivator2.jpg                # Alternate cultivator artwork
+│
 ├── css/
-│   └── style.css
-├── js/
-│   ├── 01-config-realms.js
-│   ├── 02-cultivation-systems.js
-│   ├── 03-achievements-persistence.js
-│   ├── 04-interface.js
-│   └── 05-audio-bootstrap.js
-└── assets/
-    ├── cultivator.jpg
-    └── cultivator2.jpg
+│   └── style.css                      # Layout and responsive styling
+│
+└── js/
+    ├── 01-config-realms.js            # Configuration, defaults and realm data
+    ├── 02-cultivation-systems.js      # Qi, breakthroughs, lifespan and reincarnation
+    ├── 03-achievements-persistence.js # Achievements, saves and offline progress
+    ├── 04-interface.js               # UI rendering, menus and interactions
+    └── 05-audio-bootstrap.js          # Optional music and startup sequence
 ```
 
-| File | Responsibility |
+### 🔍 Main file guide
+
+| File | What it does |
 |---|---|
-| `index.html` | Application shell, interface structure, and script loading |
-| `balance.json` | Skills, realm requirements, rewards, reincarnation, offline progress, lifespan, and time-flow data |
-| `css/style.css` | Layout, responsive styling, and visual effects |
-| `js/01-config-realms.js` | Shared configuration, default state, realm definitions, and validation |
-| `js/02-cultivation-systems.js` | Qi generation, breakthroughs, techniques, lifespan, time flow, and reincarnation |
-| `js/03-achievements-persistence.js` | Achievements, save slots, offline progress, migration, and persistence |
-| `js/04-interface.js` | Rendering, menus, panels, settings, save controls, and UI events |
-| `js/05-audio-bootstrap.js` | Optional background-music initialization and startup sequence |
-| `playtest.js` | Node.js-based progression and balance simulator |
-| `QA-REPORT.md` | Detailed release audit, regression coverage, stress-test results, and limitations |
+| `index.html` | Application shell, interface structure, and script loading. |
+| `balance.json` | Data-driven skills, realm requirements, rewards, reincarnation, offline progress, lifespan, and time-flow values. |
+| `css/style.css` | Layout, responsive styling, and visual effects. |
+| `js/01-config-realms.js` | Shared configuration, default state, realm definitions, and validation. |
+| `js/02-cultivation-systems.js` | Qi generation, breakthroughs, techniques, lifespan, time flow, and reincarnation. |
+| `js/03-achievements-persistence.js` | Achievements, save slots, offline progress, migration, and persistence. |
+| `js/04-interface.js` | Rendering, menus, panels, settings, save controls, and UI events. |
+| `js/05-audio-bootstrap.js` | Optional background-music initialization and startup sequence. |
+| `playtest.js` | Node.js-based progression and balance simulator. |
+| `QA-REPORT.md` | Release audit, regression coverage, stress-test results, and limitations. |
 
-## Development and testing
+---
 
-The game itself does not require Node.js. Node.js is only needed for the included simulator and syntax checks.
+## 🛠️ Development and Testing
 
-Run the progression simulator:
+The game itself does **not** require Node.js. Node.js is only needed for the included progression simulator and JavaScript syntax checks.
+
+### ▶️ Run the progression simulator
+
+From the project directory:
 
 ```bash
 node playtest.js
 ```
 
-Check JavaScript syntax:
+### 🧪 Check JavaScript syntax
 
 ```bash
 node --check js/01-config-realms.js
@@ -149,11 +329,17 @@ node --check js/05-audio-bootstrap.js
 node --check playtest.js
 ```
 
-`playtest.js` runs example play-style profiles and estimates how far they progress under the current balance configuration. It is a balance simulator, not a replacement for browser-based gameplay testing. The separate release audit and its limitations are documented in [`QA-REPORT.md`](QA-REPORT.md); the browser-test harness itself is not included in this source archive.
+The simulator evaluates example play-style profiles and estimates their progress under the current balance configuration. It is a balance simulator, **not** a replacement for browser-based gameplay testing.
 
-## Audio and optional assets
+📋 The separate [`QA-REPORT.md`](QA-REPORT.md) documents the release audit, regression coverage, stress tests, and test-environment limitations. The browser-test harness itself is not included in this source archive.
 
-The audio controls and music bootstrap are included, but the optional MP3 soundtrack files are not bundled. To enable music, add authorized tracks using these expected paths:
+---
+
+## 🎵 Audio and Optional Assets
+
+The audio controls and music bootstrap are included, but the optional MP3 soundtrack files are **not bundled** with this source archive.
+
+To enable music, create `assets/music/` and add authorized audio files using these expected names:
 
 ```text
 assets/music/music1.mp3
@@ -165,14 +351,38 @@ assets/music/music6.mp3
 assets/music/music7.mp3
 ```
 
-The game remains playable without soundtrack files. Browsers may restrict audio autoplay until the player interacts with the page.
+- 🎧 The game remains playable without soundtrack files.
+- 🔊 Browsers may restrict autoplay until the player interacts with the page.
+- 🎬 The former cutscene and video playback system has been removed. Death, reincarnation, and completion continue through in-game result dialogs.
 
-The former cutscene and video playback system has been removed. Death, reincarnation, and completion continue to use their in-game result dialogs.
+---
 
-## Version and license
+## 📦 Version, Scope and License
 
-Dao Quest **1.0** is a maintenance-focused release. The current progression ends at Ancestor Realm; this build does not include additional realms beyond it or the removed cutscene/video system.
+<div align="center">
+
+### ☯️ DAO QUEST — VERSION 1.0
+
+**Stable maintenance release · MIT License**
+
+</div>
+
+Version 1.0 preserves the existing cultivation game and its current progression: 16 realms, five steps, lifespan management, techniques, achievements, reincarnation, offline progress, and local save management.
+
+- 🚫 No additional realms beyond Ancestor Realm are included.
+- 🚫 The former cutscene/video playback system is not part of this release.
+- ⚖️ The current lifespan configuration and progression balance are documented above and in `balance.json`.
 
 This project is distributed under the **MIT License**. See [`LICENSE`](LICENSE) for the complete terms.
 
 For the detailed reliability audit, test coverage, and known limitations, see [`QA-REPORT.md`](QA-REPORT.md).
+
+---
+
+<div align="center">
+
+**☯️ Cultivate with patience. Break through with purpose. Follow the Dao.**
+
+*Dao Quest 1.0*
+
+</div>
