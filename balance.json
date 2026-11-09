@@ -1,0 +1,161 @@
+{
+  "skills": {
+    "breath_control": {
+      "base": 1.2,
+      "cost": 20,
+      "costScale": 1.18,
+      "ranksPerRealm": 12,
+      "type": "qps_flat"
+    },
+    "meridian_flow": {
+      "base": 2.0,
+      "cost": 45,
+      "costScale": 1.18,
+      "ranksPerRealm": 12,
+      "type": "qpc_flat"
+    },
+    "lotus_meditation": {
+      "base": 0.008,
+      "cost": 140,
+      "costScale": 1.2,
+      "ranksPerRealm": 12,
+      "capPctPerRealm": 0.12,
+      "type": "qps_pct"
+    },
+    "dantian_temps": {
+      "base": 0.008,
+      "cost": 110,
+      "costScale": 1.2,
+      "ranksPerRealm": 12,
+      "capPctPerRealm": 0.12,
+      "type": "qpc_pct"
+    },
+    "closed_door": {
+      "base": 0.005,
+      "cost": 150,
+      "costScale": 1.22,
+      "ranksPerRealm": 12,
+      "capPctPerRealm": 0.08,
+      "type": "offline_pct"
+    },
+    "celestial_resonance": {
+      "oneTime": true,
+      "type": "qps_pct",
+      "value": 0.12,
+      "cost": 2500000,
+      "unlockAtCycle": "spirit"
+    },
+    "void_convergence": {
+      "oneTime": true,
+      "type": "qpc_pct",
+      "value": 0.12,
+      "cost": 4000000,
+      "unlockAtCycle": "spirit"
+    }
+  },
+  "realmBaselines": {
+    "qpsFlatPerRank": 0.15,
+    "qpcFlatPerRank": 0.25
+  },
+  "stageRequirement": {
+    "realmBase": 55,
+    "realmBaseScale": 4,
+    "stageScale": 1.181
+  },
+  "progression": {
+    "qpcBaseStart": 1,
+    "qpsBaseStart": 1,
+    "realmAdvanceReward": {
+      "qpcBaseAdd": 3.1,
+      "qpsBaseAdd": 1.15
+    }
+  },
+  "reincarnation": {
+    "karmaPerUnit": 0.12,
+    "lifetimeQiDivisor": 5000,
+    "realmKarmaFactor": 4,
+    "minKarma": 3,
+    "deathPenalty": 0.5,
+    "offlineKarmaBonus": 1.5
+  },
+  "offline": {
+    "capHours": 16
+  },
+  "lifespan": {
+    "realmMaxLifespan": [
+      100,
+      200,
+      3000,
+      10000,
+      30000,
+      100000,
+      500000,
+      1000000,
+      10000000,
+      100000000,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null
+    ],
+    "yearsPerSecond": 0.5
+  },
+  "timeSpeed": {
+    "speeds": [
+      0,
+      0.25,
+      0.5,
+      1,
+      2,
+      4,
+      6,
+      8,
+      10
+    ],
+    "unlockRealmIndex": [
+      0,
+      0,
+      0,
+      0,
+      1,
+      4,
+      8,
+      12,
+      14
+    ]
+  },
+  "cycleDefinitions": {
+    "mortal": {
+      "realms": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6
+      ],
+      "realmBonus": 0.25,
+      "name": "Mortal World",
+      "description": "The First Step, ending with Ascendant and the departure from the starting world."
+    },
+    "spirit": {
+      "realms": [
+        7,
+        8,
+        9,
+        10,
+        11,
+        12,
+        13,
+        14,
+        15
+      ],
+      "realmBonus": 0.5,
+      "name": "Higher Worlds",
+      "description": "The Second through Fifth Steps, from Nirvana cultivation to the Ancestor Realm."
+    }
+  }
+}
