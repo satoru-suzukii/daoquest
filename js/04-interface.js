@@ -108,6 +108,11 @@ function migrateState(data) {
   if (!data.version) data.version = '0.0.0';
   migrateRealmSystem(data);
 
+  // Migrate legacy age before defaults are merged; otherwise the default age of
+  // zero masks the old ageYears value and silently resets a returning player.
+  if (data.age === undefined && data.ageYears !== undefined) data.age = data.ageYears;
+  delete data.ageYears;
+
   // Preserve the existing migration paths, then repair every nested object from
   // current defaults so partially populated imports cannot leave undefined fields.
   const defaults = defaultState();
@@ -122,10 +127,6 @@ function migrateState(data) {
       data[key] = defaultValue;
     }
   }
-
-  // Legacy age field migration.
-  if (data.age === undefined && data.ageYears !== undefined) data.age = data.ageYears;
-  delete data.ageYears;
 
   // Keep rank-system migration for pre-rank saves.
   if (!data.migratedToRankSystem) {
@@ -388,6 +389,9 @@ function importSave(){
     previousStorageCaptured = true;
     if (importedAchievements) achievementState = normalizeAchievementState(importedAchievements);
     S = mergedState;
+    // Imported saves can contain stale lifespan fields from another realm or
+    // older rules. Rebuild the cap/current value from the authoritative realm.
+    refreshLifespanForRealm();
 
     isHandlingDeath = false;
     SKILL_CAT = null;
@@ -406,6 +410,18 @@ function importSave(){
     renderAll();
     renderAchievementsList();
     showModal('Save Imported', 'Your cultivation progress and achievements have been successfully restored.', '📜');
+    // Resume an interrupted death flow exactly as the normal slot loader does.
+    // Older or externally created backups can contain the death/reincarnation
+    // guard flags; leaving them set would keep the imported character frozen.
+    const pendingDeath = !!(S.isDead || S.lifecycle?.isReincarnating ||
+      (!isImmortal() && Number(S.age) >= getMaxLifespan()));
+    if (pendingDeath) {
+      isHandlingDeath = false;
+      S.isDead = false;
+      S.lifecycle.isReincarnating = false;
+      S.flags.lifespanHandled = false;
+      void handleLifespanEnd();
+    }
     return true;
   } catch(e) {
     if (previousState) S = previousState;
@@ -1028,7 +1044,7 @@ async function loadGameFromSlot(slot) {
   }
 
   const pendingDeath = !!(S.isDead || S.lifecycle?.isReincarnating ||
-    (!isImmortal() && S.flags?.lifespanHandled && Number(S.age) >= getMaxLifespan()));
+    (!isImmortal() && Number(S.age) >= getMaxLifespan()));
 
   renderAll();
   startActiveSession();

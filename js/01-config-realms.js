@@ -398,28 +398,32 @@ function validateBalanceConfig(BAL, realms) {
   }
 
   // 2. LIFESPAN VALIDATION
-  if (BAL.lifespan) {
-    const lifespans = BAL.lifespan.realmMaxLifespan || [];
+  // The first two Steps have finite caps; the Third Step onward is always immortal.
+  const defaultRealmLifespans = [
+    100, 200, 3000, 10000, 30000, 100000, 500000,
+    1000000, 10000000, 100000000,
+    null, null, null, null, null, null
+  ];
+  if (!BAL.lifespan || typeof BAL.lifespan !== 'object' || Array.isArray(BAL.lifespan)) {
+    warn('lifespan: missing or invalid section. Restoring safe defaults.');
+    BAL.lifespan = { realmMaxLifespan: [...defaultRealmLifespans], yearsPerSecond: 0.5 };
+  }
+  {
+    const source = Array.isArray(BAL.lifespan.realmMaxLifespan) ? BAL.lifespan.realmMaxLifespan : [];
     const realmCount = realms.length;
-    
-    // Ensure lifespan array matches realm count
-    if (lifespans.length > realmCount) {
-      warn(`lifespan: realmMaxLifespan too long (${lifespans.length} vs ${realmCount} realms). Truncating.`);
-      BAL.lifespan.realmMaxLifespan = lifespans.slice(0, realmCount);
-    } else if (lifespans.length < realmCount) {
-      warn(`lifespan: realmMaxLifespan too short (${lifespans.length} vs ${realmCount} realms). Padding.`);
-      const lastValue = lifespans[lifespans.length - 1];
-      const paddingValue = (lastValue === null || typeof lastValue === 'number') ? lastValue : 100;
-      while (BAL.lifespan.realmMaxLifespan.length < realmCount) {
-        BAL.lifespan.realmMaxLifespan.push(paddingValue);
+    if (source.length !== realmCount) {
+      warn(`lifespan: realmMaxLifespan length ${source.length}; expected ${realmCount}. Repairing.`);
+    }
+    BAL.lifespan.realmMaxLifespan = Array.from({ length: realmCount }, (_, index) => {
+      if ((realms[index]?.step || 1) >= 3) {
+        if (source[index] !== null) warn(`lifespan: ${realms[index].name} must be immortal. Setting cap to null.`);
+        return null;
       }
-    }
-    
-    // Ensure last realm is immortal (null)
-    if (BAL.lifespan.realmMaxLifespan[realmCount - 1] !== null) {
-      warn(`lifespan: final realm should be immortal (null). Setting last realm to null.`);
-      BAL.lifespan.realmMaxLifespan[realmCount - 1] = null;
-    }
+      const value = source[index];
+      if (typeof value === 'number' && Number.isFinite(value) && value > 0) return value;
+      warn(`lifespan: invalid finite cap for ${realms[index]?.name || `realm ${index}`}. Restoring ${defaultRealmLifespans[index]} years.`);
+      return defaultRealmLifespans[index];
+    });
     
     // Validate yearsPerSecond is within safe range [0.005, 5.0]
     let yps = BAL.lifespan.yearsPerSecond;

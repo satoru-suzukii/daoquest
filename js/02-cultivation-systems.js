@@ -1055,13 +1055,16 @@ function handleDeathReincarnate(){
 
 // Lifespan management functions
 function getMaxLifespan(realmIndex = null){
-  const index = realmIndex !== null ? realmIndex : S.realmIndex;
+  const requestedIndex = Number(realmIndex !== null ? realmIndex : S.realmIndex);
+  const index = Number.isFinite(requestedIndex)
+    ? Math.max(0, Math.min(realms.length - 1, Math.floor(requestedIndex)))
+    : 0;
   const maxFromConfig = BAL.lifespan?.realmMaxLifespan?.[index];
-  if(maxFromConfig === null || maxFromConfig === undefined) {
-    // Ancestor Realm realm - infinite lifespan
+  if (maxFromConfig === null || maxFromConfig === undefined) return null;
+  if (typeof maxFromConfig !== 'number' || !Number.isFinite(maxFromConfig) || maxFromConfig <= 0) {
     return null;
   }
-  
+
   // Configured lifespan values are the exact limits for each realm.
   // Karma affects other systems, but does not alter the specified age caps.
   return maxFromConfig;
@@ -1076,23 +1079,23 @@ function isImmortal(){
  * Called after breakthrough and reincarnation to ensure lifespan matches current realm
  */
 function refreshLifespanForRealm() {
-  const max = getMaxLifespan(); // from BAL.lifespan.realmMaxLifespan[S.realmIndex]
+  const max = getMaxLifespan();
   if (max === null) {
-    // Ancestor Realm realm - infinite lifespan
+    // Third Step and beyond are immortal: normalize the complete display state,
+    // even when a save/import carries a stale finite lifespan from an older realm.
     S.lifespan = { current: null, max: null };
-    S.age = 0; // Immortals don't age
-  } else {
-    if (!S.lifespan || !Number.isFinite(S.lifespan.current)) {
-      // Initialize lifespan if missing or corrupted
-      S.lifespan = { current: max, max: max };
-    } else {
-      // Update the cap and recompute remaining lifespan from the saved age.
-      // This keeps existing saves consistent when the realm lifespan table changes.
-      S.lifespan.max = max;
-      const age = Number.isFinite(S.age) ? Math.max(0, S.age) : 0;
-      S.lifespan.current = Math.max(0, max - age);
-    }
+    S.age = 0;
+    if (S.flags) S.flags.lifespanHandled = false;
+    return;
   }
+
+  // The realm table is authoritative. Never trust a saved `lifespan.max` or
+  // `lifespan.current`: both can be stale after imports or balance adjustments.
+  const rawAge = Number(S.age);
+  const age = Number.isFinite(rawAge) ? Math.min(max, Math.max(0, rawAge)) : 0;
+  S.age = age;
+  S.lifespan = { current: Math.max(0, max - age), max };
+  if (S.flags) S.flags.lifespanHandled = age >= max;
 }
 
 function updateLifespanOnRealmAdvance(){
